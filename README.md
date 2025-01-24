@@ -1,20 +1,34 @@
-Based on the available information from your GitHub repository, here's a draft for your README.md file:
+Here's a comprehensive README.md for your project:
 
 ```markdown
-# Pass Generation with Node.js
+# Apple Wallet Pass Generator
 
-This project provides a Node.js application for generating custom Apple Wallet passes. It utilizes the [passkit-generator](https://github.com/alexandercerutti/passkit-generator) library to facilitate the creation of passes.
+A Node.js application that generates custom Apple Wallet passes using the [passkit-generator](https://github.com/alexandercerutti/passkit-generator) library. This application processes user inputs, including images and pass details, to create personalized passes.
+
+## Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [API Endpoint](#api-endpoint)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
 ## Features
 
-- **Customizable Pass Models**: Define and use custom pass models stored in the `models` directory.
-- **Certificate Management**: Manage your Apple Wallet certificates in the `certs` directory.
-- **Icon Creation**: Includes a script for creating icons for your passes.
+- **Dynamic Pass Generation**: Create Apple Wallet passes with customizable details such as expiry date, service type, discount, background color, and images.
+- **Image Processing**: Utilizes [Sharp](https://github.com/lovell/sharp) for efficient image resizing and processing.
+- **Express Server**: Handles HTTP requests for pass generation and serves the generated passes.
 
 ## Prerequisites
 
 - **Node.js**: Ensure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
-- **Apple Wallet Certificates**: Obtain the necessary certificates from Apple's developer portal and place them in the `certs` directory.
+- **Apple Wallet Certificates**: Obtain the necessary certificates from Apple's developer portal and place them in the `certs` directory:
+  - `signerCert.pem`
+  - `signerKey.pem`
+  - `wwdr.pem`
 
 ## Installation
 
@@ -37,36 +51,61 @@ This project provides a Node.js application for generating custom Apple Wallet p
 
    - Place your pass model files in the `models` directory. Ensure that your model includes all necessary assets and a valid `pass.json` file.
 
-2. **Run the Application**:
+2. **Start the Server**:
 
-   - To generate a pass, execute:
+   ```bash
+   node app.js
+   ```
 
-     ```bash
-     node app.js
-     ```
+   The server will run on `http://localhost:3000`.
 
-   - The generated pass will be output as specified in your application logic.
+3. **Generate a Pass**:
 
-3. **Create Icons (Optional)**:
+   - Send a POST request to `http://localhost:3000/generate-pass` with a JSON payload containing the following fields:
+     - `expiryDate` (optional): The expiration date of the pass.
+     - `serviceType` (optional): The type of service associated with the pass.
+     - `discount` (required): The discount value to display on the pass.
+     - `backgroundColor` (optional): The background color of the pass in `rgb(r, g, b)` format.
+     - `stripImage` (optional): A base64-encoded string of the image to be used as the strip image on the pass.
 
-   - If you need to create icons for your pass, you can use the provided script:
+   Example JSON payload:
 
-     ```bash
-     node create-icon.js
-     ```
+   ```json
+   {
+     "expiryDate": "2025-12-31",
+     "serviceType": "Tech Support",
+     "discount": "25%",
+     "backgroundColor": "rgb(41, 128, 185)",
+     "stripImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+   }
+   ```
 
-     Ensure that the script is configured correctly to generate the desired icons.
+   The response will contain a JSON object with the `passUrl` and `passId`.
 
 ## Project Structure
 
 - `certs/`: Directory containing your Apple Wallet certificates.
 - `models/`: Directory for storing your pass models.
+- `temp/`: Directory where generated `.pkpass` files are temporarily stored.
 - `app.js`: Main application script for generating passes.
-- `create-icon.js`: Script for creating pass icons.
+- `package.json`: Contains npm dependencies and scripts.
 
-## Dependencies
+## API Endpoint
 
-- [passkit-generator](https://github.com/alexandercerutti/passkit-generator): A Node.js library for generating Apple Wallet passes.
+- **POST `/generate-pass`**: Generates an Apple Wallet pass based on the provided JSON payload.
+
+  **Request Body Parameters**:
+
+  - `expiryDate` (optional): The expiration date of the pass.
+  - `serviceType` (optional): The type of service associated with the pass.
+  - `discount` (required): The discount value to display on the pass.
+  - `backgroundColor` (optional): The background color of the pass in `rgb(r, g, b)` format.
+  - `stripImage` (optional): A base64-encoded string of the image to be used as the strip image on the pass.
+
+  **Response**:
+
+  - `passUrl`: URL to download the generated `.pkpass` file.
+  - `passId`: Unique identifier for the generated pass.
 
 ## License
 
@@ -75,7 +114,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 - [alexandercerutti/passkit-generator](https://github.com/alexandercerutti/passkit-generator): The library used for pass generation.
-
+- [Sharp](https://github.com/lovell/sharp): High-performance Node.js image processing library.
+- [Express](https://expressjs.com/): Fast, unopinionated, minimalist web framework for Node.js.
 ```
 
 Feel free to customize this README to better fit your project's specifics and to add any additional information that might be helpful for users. 
