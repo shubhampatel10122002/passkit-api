@@ -1,6 +1,4 @@
-Here's a comprehensive README.md for your project:
 
-```markdown
 # Apple Wallet Pass Generator
 
 A Node.js application that generates custom Apple Wallet passes using the [passkit-generator](https://github.com/alexandercerutti/passkit-generator) library. This application processes user inputs, including images and pass details, to create personalized passes.
